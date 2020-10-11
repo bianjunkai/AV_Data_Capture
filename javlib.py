@@ -23,12 +23,29 @@ def main(number: str):
 
     # Scraping
     result = get_html(
-        "http://www.javlibrary.com/cn/vl_searchbyid.php?keyword={}".format(number),
+        "http://www.b47w.com/cn/vl_searchbyid.php?keyword={}".format(number),
         cookies=cookies,
         ua=user_agent,
         return_type="object"
     )
+  
+    if "?keyword=" in result.url:
+        soup = BeautifulSoup(result.text, "html.parser")
+        items = soup.find_all("div", class_="video")
+        for item in items:
+            if item.find(class_="id").string == number:
+                video_url = item.a.get("href").split("/").pop()
+        result = get_html(
+            "http://www.b47w.com/cn/"+video_url,
+            cookies=cookies,
+            ua=user_agent,
+            return_type="object"
+        )
+
+    print(result.url)
+
     soup = BeautifulSoup(result.text, "html.parser")
+
     lx = html.fromstring(str(soup))
 
     if "/?v=jav" in result.url:
@@ -50,12 +67,16 @@ def main(number: str):
             "release": get_table_el_td(soup, "video_date"),
             "runtime": get_from_xpath(lx, '//*[@id="video_length"]/table/tr/td[2]/span/text()'),
             "series":'',
+            "score":get_score(soup)
         }
     else:
         dic = {}
 
     return json.dumps(dic, ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ':'))
 
+def get_score(soup: BeautifulSoup) -> str:
+    score = soup.find('span',class_="score").string.strip()
+    return score.replace('(','').replace(')','')
 
 def get_from_xpath(lx: html.HtmlElement, xpath: str) -> str:
     return lx.xpath(xpath)[0].strip()
@@ -102,9 +123,8 @@ def get_title(lx: html.HtmlElement, soup: BeautifulSoup) -> str:
 def get_cover(lx: html.HtmlComment) -> str:
     return "http:{}".format(get_from_xpath(lx, '//*[@id="video_jacket_img"]/@src'))
 
-
 if __name__ == "__main__":
-    lists = ["DVMC-003", "GS-0167", "JKREZ-001", "KMHRS-010", "KNSD-023"]
-    #lists = ["DVMC-003"]
+   # lists = ["DVMC-003", "GS-0167", "JKREZ-001", "KMHRS-010", "KNSD-023"]
+    lists = ["IPX-134","IPX-035"]
     for num in lists:
         print(main(num))

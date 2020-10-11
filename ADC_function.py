@@ -97,7 +97,7 @@ def get_javlib_cookie() -> [dict, str]:
     for i in range(retry_count):
         try:
             raw_cookie, user_agent = cloudscraper.get_cookie_string(
-                "http://www.m45e.com/",
+                "http://www.b47w.com/",
                 proxies=proxies
             )
         except requests.exceptions.ProxyError:

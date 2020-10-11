@@ -16,42 +16,72 @@ def find_all_movie(work_direct):
     return total
 
 def find_new_moive (movies,file_path):
-    with open(file_path,"r") as f :
-        data = json.load(f)
-    new_movie = list(set(movies).difference(set(data)))
+    movie_exists = []
+    if os.path.exists(file_path):
+        with open(file_path,"r") as f :
+            movie_exists_json = json.load(f)
+            for movie in movie_exists_json:
+                movie_exists.append(movie['movie'])
+ 
+    new_movie = list(set(movies).difference(set(movie_exists)))
     return new_movie
 
 def retrive_rating(new_movies):
+    result = []
     for movie in new_movies:
-        json_data={}
-        json_data=json.loads(javlib.main(movie.split(".",1)[0]))
-    return json_data
+        try:
+            json_data={}
+            print (movie.split(".",1)[0])   
+            json_data=json.loads(javlib.main(movie.split(".",1)[0]))
+            number = json_data['number']
+            actor = json_data['actor']
+            score = json_data['score']
+        except :
+            number = movie.split(".",1)[0]
+            actor =''
+            score =''
+             
+        finally:
+            movie_infor = {
+                'movie':number,
+                'actor':actor,
+                'score':score
+            }
+
+        print(movie_infor)
+        result.append(movie_infor)
+    return result
+
+def write_file(movie_ratings,file_path):
+    with open (file_path,'a',encoding='utf-8') as f:
+        json.dump(movie_ratings,f)
 
 def jav_rates(work_direct,file_path):
 
 #     # find all movies of the word directory
     movies = find_all_movie(work_direct)
 
+    print(len(movies))
+
 #     # compare and find new movies in the directoyr
     new_movies = find_new_moive(movies,file_path)
+
+    print (new_movies)
 
     # retrive rating of the new movies
     movie_rating = retrive_rating(new_movies)
 
-    return movie_rating
-
 #     # update file
-#     write_file(movie_rating,file)
+    write_file(movie_rating,file_path)
 
 
 if __name__ == '__main__':
     version = '3.6'
-    FILE_PATH ="data.json"
-    WORK_DIRECT = "Z:\Movies\JAV_output"
+    FILE_PATH = 'data.json'
+    WORK_DIRECT = 'Z:/Movies/JAV_output'
 
     # Main function: read all the movies from the work directory and get their ratings.
-    result = jav_rates(WORK_DIRECT,FILE_PATH)
+    jav_rates(WORK_DIRECT,FILE_PATH)
 
-    print(result)
     # total = find_all_movie("Z:\Movies\JAV_output")
     
