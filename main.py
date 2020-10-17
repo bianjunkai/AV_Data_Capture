@@ -12,17 +12,19 @@ def find_all_movie(work_direct):
         if os.path.isdir(f):
             total += find_all_movie(f)
         elif os.path.splitext(f)[1] in file_type:
-            total.append(entry)
+            total.append(entry.split(".",1)[0])
     return total
 
 def find_new_moive (movies,file_path):
+    # print(movies)
     movie_exists = []
     if os.path.exists(file_path):
         with open(file_path,"r") as f :
             movie_exists_json = json.load(f)
+            # print(movie_exists_json)
             for movie in movie_exists_json:
                 movie_exists.append(movie['movie'])
- 
+    # print(movie_exists)
     new_movie = list(set(movies).difference(set(movie_exists)))
     return new_movie
 
@@ -31,8 +33,9 @@ def retrive_rating(new_movies):
     for movie in new_movies:
         try:
             json_data={}
-            print (movie.split(".",1)[0])   
-            json_data=json.loads(javlib.main(movie.split(".",1)[0]))
+            # print (movie.split(".",1)[0])   
+            print(movie)
+            json_data=json.loads(javlib.main(movie))
             number = json_data['number']
             actor = json_data['actor']
             score = json_data['score']
