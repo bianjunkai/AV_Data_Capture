@@ -1,4 +1,5 @@
 import os
+import csv
 import json
 import javlib
 
@@ -19,10 +20,11 @@ def find_new_moive (movies,file_path):
     # print(movies)
     movie_exists = []
     if os.path.exists(file_path):
-        with open(file_path,"r") as f :
-            movie_exists_json = json.load(f)
+        with open(file_path,"r",encoding='utf-8') as f : 
+            movie_exisits_csv = csv.DictReader(f)
+            # movie_exists_json = json.load(f)
             # print(movie_exists_json)
-            for movie in movie_exists_json:
+            for movie in movie_exisits_csv:
                 movie_exists.append(movie['movie'])
     # print(movie_exists)
     new_movie = list(set(movies).difference(set(movie_exists)))
@@ -39,25 +41,33 @@ def retrive_rating(new_movies):
             number = json_data['number']
             actor = json_data['actor']
             score = json_data['score']
+            release = json_data['release']
         except :
             number = movie.split(".",1)[0]
             actor =''
             score =''
+            release =''
              
         finally:
             movie_infor = {
                 'movie':number,
                 'actor':actor,
-                'score':score
+                'score':score,
+                'release':release
             }
 
         print(movie_infor)
         result.append(movie_infor)
     return result
 
-def write_file(movie_ratings,file_path):
+def write_file(movie_ratings,file_path,rewrite):
+    headers = ['movie', 'actor', 'score', 'release']
     with open (file_path,'a',encoding='utf-8') as f:
-        json.dump(movie_ratings,f)
+        f_csv = csv.DictWriter(f, headers)
+        if rewrite:
+            f_csv.writeheader()
+        f_csv.writerows(movie_ratings)
+
 
 def jav_rates(work_direct,file_path):
 
@@ -69,20 +79,24 @@ def jav_rates(work_direct,file_path):
 #     # compare and find new movies in the directoyr
     new_movies = find_new_moive(movies,file_path)
 
-    print (new_movies)
+    if len(new_movies) == len(movies) :
+        rewrite = 1
+    else:
+        rewrite = 0
 
+    # print(rewrite)
     # retrive rating of the new movies
     movie_rating = retrive_rating(new_movies)
 
 #     # update file
-    write_file(movie_rating,file_path)
+    write_file(movie_rating,file_path,rewrite)
 
 
 if __name__ == '__main__':
-    version = '3.6'
-    FILE_PATH = 'data.json'
+    version = '3.7'
+    FILE_PATH = 'data.csv'
     WORK_DIRECT = 'Z:/Movies/JAV_output'
-
+    # WORK_DIRECT = 'Z:/Movies/in'
     # Main function: read all the movies from the work directory and get their ratings.
     jav_rates(WORK_DIRECT,FILE_PATH)
 
