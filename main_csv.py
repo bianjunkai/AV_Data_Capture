@@ -47,8 +47,10 @@ def retrive_rating(new_movies):
             actor =''
             score =''
             release =''
-             
+        
         finally:
+            if movie != number:
+                number = movie
             movie_infor = {
                 'movie':number,
                 'actor':actor,

@@ -1,0 +1,1 @@
+%~dp0\avdc\Scripts\python.exe %~dp0\main_csv.py
