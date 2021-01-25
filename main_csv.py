@@ -100,8 +100,8 @@ def jav_rates(work_direct,file_path):
 if __name__ == '__main__':
     version = '3.7'
     FILE_PATH = 'data.csv'
-    #WORK_DIRECT = 'Z:/Movies/JAV_output'
-    WORK_DIRECT = 'Z:/Movies/in'
+    WORK_DIRECT = 'Z:/Movies/JAV_output'
+    # WORK_DIRECT = 'Z:/Movies/in'
     # Main function: read all the movies from the work directory and get their ratings.
     jav_rates(WORK_DIRECT,FILE_PATH)
 
