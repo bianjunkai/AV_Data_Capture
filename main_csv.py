@@ -2,6 +2,7 @@ import os
 import csv
 import json
 import javlib
+import re
 
 def find_all_movie(work_direct):
  
@@ -13,7 +14,9 @@ def find_all_movie(work_direct):
         if os.path.isdir(f):
             total += find_all_movie(f)
         elif os.path.splitext(f)[1] in file_type:
-            total.append(entry.split(".",1)[0])
+            movie = entry.split(".",1)[0]
+            movie= re.split('([A-Z]*-[0-9]*)',movie)[1]
+            total.append(movie)
     return total
 
 def find_new_moive (movies,file_path):
@@ -76,29 +79,29 @@ def jav_rates(work_direct,file_path):
 #     # find all movies of the word directory
     movies = find_all_movie(work_direct)
 
-    print(len(movies))
+    print(movies)
 
-#     # compare and find new movies in the directoyr
+     # compare and find new movies in the directoyr
     new_movies = find_new_moive(movies,file_path)
 
     if len(new_movies) == len(movies) :
-        rewrite = 1
+         rewrite = 1
     else:
         rewrite = 0
 
-    # print(rewrite)
-    # retrive rating of the new movies
+     # print(rewrite)
+#     # retrive rating of the new movies
     movie_rating = retrive_rating(new_movies)
 
-#     # update file
+     # update file
     write_file(movie_rating,file_path,rewrite)
 
 
 if __name__ == '__main__':
     version = '3.7'
     FILE_PATH = 'data.csv'
-    WORK_DIRECT = 'Z:/Movies/JAV_output'
-    # WORK_DIRECT = 'Z:/Movies/in'
+    #WORK_DIRECT = 'Z:/Movies/JAV_output'
+    WORK_DIRECT = 'Z:/Movies/in'
     # Main function: read all the movies from the work directory and get their ratings.
     jav_rates(WORK_DIRECT,FILE_PATH)
 
