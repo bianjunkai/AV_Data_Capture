@@ -35,11 +35,24 @@ def find_new_moive (movies,file_path):
 
 def retrive_rating(new_movies):
     result = []
+    i = 0
+    t = len(new_movies)
+    # Log Output
+    if t!=0 :
+        print("================数据抓取================")
+    else :
+        print("================无数据抓取==============")
+    
     for movie in new_movies:
+        i = i+1
+        # Log Output
+        print("当前进度： ", i,"/",t)
         try:
             json_data={}
             # print (movie.split(".",1)[0])   
-            print(movie)
+            
+            # Log Output
+            print("当前影片: ",movie)
             json_data=json.loads(javlib.main(movie))
             number = json_data['number']
             actor = json_data['actor']
@@ -60,9 +73,15 @@ def retrive_rating(new_movies):
                 'score':score,
                 'release':release
             }
-
-        print(movie_infor)
+        # Log Output
+        print("相关讯息: ",movie_infor)
+        print("----------------------------------------")
         result.append(movie_infor)
+
+    if i!=0 :
+        print("================数据抓取完毕============")
+    else :
+        print("========================================")
     return result
 
 def write_file(movie_ratings,file_path,rewrite):
@@ -79,10 +98,17 @@ def jav_rates(work_direct,file_path):
 #     # find all movies of the word directory
     movies = find_all_movie(work_direct)
 
-    print(movies)
+    # Log Output
+    print("============任务基本信息================")
+    print("已有电影数量：",len(movies))
 
      # compare and find new movies in the directoyr
     new_movies = find_new_moive(movies,file_path)
+
+     # Log Output
+    print("data.csv中已有电影数量：",(len(movies)-len(new_movies)))
+    print("本次新增电影数量: ",len(new_movies))
+    print("========================================")
 
     if len(new_movies) == len(movies) :
          rewrite = 1
@@ -93,15 +119,20 @@ def jav_rates(work_direct,file_path):
 #     # retrive rating of the new movies
     movie_rating = retrive_rating(new_movies)
 
+     # Log Output
+    
+    print("================写入文档================")
      # update file
     write_file(movie_rating,file_path,rewrite)
-
+    
+    # Log Output
+    print("================写入完毕================")
 
 if __name__ == '__main__':
     version = '3.7'
-    FILE_PATH = 'data.csv'
-    WORK_DIRECT = 'Z:/Movies/JAV_output'
-    # WORK_DIRECT = 'Z:/Movies/in'
+    FILE_PATH = 'data2.csv'
+   #WORK_DIRECT = 'Z:/Movies/JAV_output'
+    WORK_DIRECT = 'Z:/Movies/in'
     # Main function: read all the movies from the work directory and get their ratings.
     jav_rates(WORK_DIRECT,FILE_PATH)
 
